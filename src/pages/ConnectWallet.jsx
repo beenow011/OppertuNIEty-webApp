@@ -13,6 +13,7 @@ function ConnectWallet() {
   const navigate = useNavigate();
   const [showCreateAccountForm, setShowCreateAccountForm] = useState(false);
   const [formData, setFormData] = useState({
+    name: "",
     userAddress: "",
     usn: "",
     branch: "",
@@ -74,6 +75,7 @@ function ConnectWallet() {
         usn: formData.usn.toLowerCase(),
         branch: formData.branch,
         graduationYear: formData.graduationYear,
+        name: formData.name,
       };
       const res = await axios.post(url, dataSignature);
       if (res.status === 200) {
@@ -148,7 +150,7 @@ function ConnectWallet() {
                     Connected Wallet Address: {selectedAccount}
                   </p>
                 ) : walletAddressLoading ? (
-                  <div>
+                  <div className="flex gap-2 justify-center items-center">
                     <Loader2 className="h-4 w-4 animate-spin text-blue-600" />{" "}
                     Connecting wallet...
                   </div>
@@ -158,6 +160,15 @@ function ConnectWallet() {
                   </button>
                 )}
               </div>
+              <input
+                type="text"
+                name="name"
+                placeholder="Name"
+                value={formData.name}
+                onChange={handleInputChange}
+                className="w-full px-4 py-2 border rounded-md bg-gray-800 text-white"
+                required
+              />
               <input
                 type="text"
                 name="usn"
