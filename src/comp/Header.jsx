@@ -1,6 +1,17 @@
 import React from "react";
+import { useWeb3Context } from "../context/useWeb3Context";
 
 function Header() {
+  const { updateWeb3State, Web3State } = useWeb3Context();
+  const { selectedAccount } = Web3State;
+  // const navigate = useNavigate();
+  const handlelogout = () => {
+    updateWeb3State({
+      selectedAccount: null,
+      signature: null,
+    });
+    // navigate("/connect-wallet");
+  };
   return (
     <header className="bg-gray-900 text-white shadow-lg py-5">
       <div className="container mx-auto flex justify-between items-center px-8">
@@ -35,6 +46,9 @@ function Header() {
             Logout
           </button>
         </nav> */}
+        <div>
+          {selectedAccount && <button onClick={handlelogout}>logout</button>}
+        </div>
       </div>
     </header>
   );

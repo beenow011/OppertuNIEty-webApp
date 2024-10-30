@@ -29,14 +29,25 @@ function ConnectWallet() {
     try {
       const { selectedAccount, signature } = await connectWallet();
       updateWeb3State({ selectedAccount, signature });
-      if (
-        selectedAccount &&
-        import.meta.env.VITE_ADMIN_WALLET_ADDRESS.toLowerCase() ===
-          selectedAccount.toLowerCase()
-      ) {
-        navigate("/admin");
-      } else if (selectedAccount) {
-        navigate("/home");
+      if (selectedAccount) {
+        const url =
+          "http://localhost:3000/api/coordinator-auth/login-user?address=" +
+          selectedAccount;
+        const dataSignature = {
+          signature,
+        };
+        const res = await axios.post(url, dataSignature);
+        if (res.status === 200) {
+          localStorage.setItem("token", res.data.token);
+          if (
+            import.meta.env.VITE_ADMIN_WALLET_ADDRESS.toLowerCase() ===
+            selectedAccount.toLowerCase()
+          ) {
+            navigate("/admin");
+          } else {
+            navigate("/home");
+          }
+        }
       }
     } catch (error) {
       console.error(error);
@@ -79,6 +90,7 @@ function ConnectWallet() {
       };
       const res = await axios.post(url, dataSignature);
       if (res.status === 200) {
+        localStorage.setItem("token", res.data.token);
         navigate("/home");
       }
       console.log("res", res.data);
