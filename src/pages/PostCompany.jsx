@@ -3,11 +3,13 @@ import React, { useState } from "react";
 import { useWeb3Context } from "../context/useWeb3Context";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { Loader2 } from "lucide-react";
 
 function PostCompany() {
   const { Web3State } = useWeb3Context();
   const { selectedAccount } = Web3State;
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     companyName: "",
     logoUrl: "",
@@ -40,6 +42,7 @@ function PostCompany() {
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
+      setLoading(true);
       console.log("Form data submitted: ", formData);
       const url = "http://localhost:3000/api/companies/post?address=";
       const res = await axios.post(url + selectedAccount, formData);
@@ -48,92 +51,103 @@ function PostCompany() {
       }
     } catch (e) {
       toast.error("Failed to post company");
+    } finally {
+      setLoading(false);
     }
     // Implement form submission logic here
   };
   console.log(formData);
 
   return (
-    <section className="bg-gray-800 text-white py-8 px-4">
+    <section className="bg-gray-900 text-white py-12 px-6">
       <div className="container mx-auto max-w-3xl">
-        <h2 className="text-3xl font-bold text-center text-blue-400 mb-6">
+        <h2 className="text-4xl font-extrabold text-center text-cyan-400 mb-10">
           Post a Company
         </h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Company Name */}
           <div>
-            <label className="block text-gray-300 mb-2">Company Name</label>
+            <label className="block text-gray-400 mb-2">Company Name</label>
             <input
               type="text"
               name="companyName"
               value={formData.companyName}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border rounded-md bg-gray-700 text-white"
+              className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 text-white focus:border-cyan-400 focus:outline-none transition-colors duration-300"
               required
             />
           </div>
 
+          {/* Company Logo URL */}
           <div>
-            <label className="block text-gray-300 mb-2">Company Logo URL</label>
+            <label className="block text-gray-400 mb-2">Company Logo URL</label>
             <input
               type="url"
               name="logoUrl"
               value={formData.logoUrl}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border rounded-md bg-gray-700 text-white"
+              className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 text-white focus:border-cyan-400 focus:outline-none transition-colors duration-300"
             />
           </div>
+
+          {/* Role */}
           <div>
-            <label className="block text-gray-300 mb-2">Role</label>
+            <label className="block text-gray-400 mb-2">Role</label>
             <input
               type="text"
               name="role"
               value={formData.role}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border rounded-md bg-gray-700 text-white"
+              className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 text-white focus:border-cyan-400 focus:outline-none transition-colors duration-300"
             />
           </div>
+
+          {/* Allowed Branches */}
           <div>
-            <label className="block text-gray-300 mb-2">Allowed Branches</label>
-            <div className="flex flex-wrap gap-4">
-              {["CSE", "ISE", "MECH", "CIVIL", "IP", "AIML"].map((branch) => (
-                <label key={branch} className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    name="allowedBranches"
-                    value={branch}
-                    onChange={(e) => {
-                      const updatedBranches = e.target.checked
-                        ? [...formData.allowedBranches, e.target.value]
-                        : formData.allowedBranches.filter(
-                            (b) => b !== e.target.value
-                          );
-                      setFormData({
-                        ...formData,
-                        allowedBranches: updatedBranches,
-                      });
-                    }}
-                    className="form-checkbox text-blue-500"
-                  />
-                  <span className="text-gray-300">{branch}</span>
-                </label>
-              ))}
+            <label className="block text-gray-400 mb-2">Allowed Branches</label>
+            <div className="flex flex-wrap gap-3">
+              {["CSE", "ISE", "MECH", "CIVIL", "IP", "AIML", "ECE"].map(
+                (branch) => (
+                  <label key={branch} className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      name="allowedBranches"
+                      value={branch}
+                      onChange={(e) => {
+                        const updatedBranches = e.target.checked
+                          ? [...formData.allowedBranches, e.target.value]
+                          : formData.allowedBranches.filter(
+                              (b) => b !== e.target.value
+                            );
+                        setFormData({
+                          ...formData,
+                          allowedBranches: updatedBranches,
+                        });
+                      }}
+                      className="form-checkbox text-cyan-500 focus:ring-cyan-500 transition duration-300"
+                    />
+                    <span className="text-gray-400">{branch}</span>
+                  </label>
+                )
+              )}
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Compensation Details */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
-              <label className="block text-gray-300 mb-2">CTC (in LPA)</label>
+              <label className="block text-gray-400 mb-2">CTC (in LPA)</label>
               <input
                 type="number"
                 name="ctc"
                 value={formData.ctc}
                 onChange={handleInputChange}
-                className="w-full px-4 py-2 border rounded-md bg-gray-700 text-white"
+                className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 text-white focus:border-cyan-400 focus:outline-none transition-colors duration-300"
                 required
               />
             </div>
             <div>
-              <label className="block text-gray-300 mb-2">
+              <label className="block text-gray-400 mb-2">
                 Base Salary (in LPA)
               </label>
               <input
@@ -141,142 +155,148 @@ function PostCompany() {
                 name="baseSalary"
                 value={formData.baseSalary}
                 onChange={handleInputChange}
-                className="w-full px-4 py-2 border rounded-md bg-gray-700 text-white"
+                className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 text-white focus:border-cyan-400 focus:outline-none transition-colors duration-300"
                 required
               />
             </div>
           </div>
 
+          {/* Job Description */}
           <div>
-            <label className="block text-gray-300 mb-2">
+            <label className="block text-gray-400 mb-2">
               Job Description (JD)
             </label>
             <textarea
               name="jobDescription"
               value={formData.jobDescription}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border rounded-md bg-gray-700 text-white"
+              className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 text-white focus:border-cyan-400 focus:outline-none transition-colors duration-300"
               rows="4"
               required
             />
           </div>
 
+          {/* Placement Schedule */}
           <div>
-            <label className="block text-gray-300 mb-2">
+            <label className="block text-gray-400 mb-2">
               Placement Schedule
             </label>
             <textarea
               name="schedule"
               value={formData.schedule}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border rounded-md bg-gray-700 text-white"
+              className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 text-white focus:border-cyan-400 focus:outline-none transition-colors duration-300"
               rows="4"
               required
             />
           </div>
 
+          {/* Placement Process */}
           <div>
-            <label className="block text-gray-300 mb-2">
+            <label className="block text-gray-400 mb-2">
               Placement Process
             </label>
             <textarea
               name="process"
               value={formData.process}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border rounded-md bg-gray-700 text-white"
+              className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 text-white focus:border-cyan-400 focus:outline-none transition-colors duration-300"
               rows="4"
               required
             />
           </div>
-          <div>
-            <label className="block text-gray-300 mb-2">
-              Cut Off CGPA (B.E)
-            </label>
-            <input
-              type="number"
-              name="cutOffCgpa"
-              value={formData.cutOffCgpa}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 border rounded-md bg-gray-700 text-white"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-gray-300 mb-2">
-              Cut Off X Percentage
-            </label>
-            <input
-              type="number"
-              name="cutOffXPercentage"
-              value={formData.cutOffXPercentage}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 border rounded-md bg-gray-700 text-white"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-gray-300 mb-2">
-              Cut Off XII Percentage
-            </label>
-            <input
-              type="number"
-              name="cutOffXiiPercentage"
-              value={formData.cutOffXiiPercentage}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 border rounded-md bg-gray-700 text-white"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-gray-300 mb-2">
-              Intake (Number of Positions)
-            </label>
-            <input
-              type="number"
-              name="intake"
-              value={formData.intake}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 border rounded-md bg-gray-700 text-white"
-              required
-            />
+
+          {/* Cut Off CGPA, X %, XII %, Intake */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-gray-400 mb-2">
+                Cut Off CGPA (B.E)
+              </label>
+              <input
+                type="number"
+                name="cutOffCgpa"
+                value={formData.cutOffCgpa}
+                onChange={handleInputChange}
+                className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 text-white focus:border-cyan-400 focus:outline-none transition-colors duration-300"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-gray-400 mb-2">
+                Cut Off X Percentage
+              </label>
+              <input
+                type="number"
+                name="cutOffXPercentage"
+                value={formData.cutOffXPercentage}
+                onChange={handleInputChange}
+                className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 text-white focus:border-cyan-400 focus:outline-none transition-colors duration-300"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-gray-400 mb-2">
+                Cut Off XII Percentage
+              </label>
+              <input
+                type="number"
+                name="cutOffXiiPercentage"
+                value={formData.cutOffXiiPercentage}
+                onChange={handleInputChange}
+                className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 text-white focus:border-cyan-400 focus:outline-none transition-colors duration-300"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-gray-400 mb-2">
+                Intake (Positions)
+              </label>
+              <input
+                type="number"
+                name="intake"
+                value={formData.intake}
+                onChange={handleInputChange}
+                className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 text-white focus:border-cyan-400 focus:outline-none transition-colors duration-300"
+                required
+              />
+            </div>
           </div>
 
+          {/* About Company, Location, Opportunity Type */}
           <div>
-            <label className="block text-gray-300 mb-2">About Company</label>
+            <label className="block text-gray-400 mb-2">About Company</label>
             <textarea
               name="aboutCompany"
               value={formData.aboutCompany}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border rounded-md bg-gray-700 text-white"
+              className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 text-white focus:border-cyan-400 focus:outline-none transition-colors duration-300"
               rows="3"
               required
             />
           </div>
 
           <div>
-            <label className="block text-gray-300 mb-2">Location</label>
+            <label className="block text-gray-400 mb-2">Location</label>
             <input
               type="text"
               name="location"
               value={formData.location}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border rounded-md bg-gray-700 text-white"
+              className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 text-white focus:border-cyan-400 focus:outline-none transition-colors duration-300"
               required
             />
           </div>
 
+          {/* Opportunity Type */}
           <div>
-            <label className="block text-gray-300 mb-2">Opportunity Type</label>
+            <label className="block text-gray-400 mb-2">Opportunity Type</label>
             <select
               name="opportunityType"
               value={formData.opportunityType}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border rounded-md bg-gray-700 text-white"
+              className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 text-white focus:border-cyan-400 focus:outline-none transition-colors duration-300"
               required
             >
-              <option value="" disabled>
-                Select Opportunity Type
-              </option>
               <option value="internship">Internship</option>
               <option value="fulltime">Fulltime</option>
               <option value="internship-fulltime">Internship + Fulltime</option>
@@ -286,7 +306,7 @@ function PostCompany() {
             </select>
           </div>
 
-          {/* Stipend (Visible only if Internship is selected) */}
+          {/* Submit Button */}
           {formData.opportunityType.includes("internship") && (
             <div>
               <label className="block text-gray-300 mb-2">
@@ -303,12 +323,18 @@ function PostCompany() {
           )}
 
           <div className="text-center">
-            <button
-              type="submit"
-              className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-md font-semibold transition duration-300 shadow-lg"
-            >
-              Post Company
-            </button>
+            {loading ? (
+              <div className="flex gap-4 items-center justify-center">
+                <Loader2 className="h-4 w-4 animate-spin text-blue-600" />
+              </div>
+            ) : (
+              <button
+                type="submit"
+                className="w-full sm:w-auto px-6 py-3 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white font-bold transition-all duration-300 transform hover:scale-105 shadow-lg"
+              >
+                Submit
+              </button>
+            )}
           </div>
         </form>
       </div>

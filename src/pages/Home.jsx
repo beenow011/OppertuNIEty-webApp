@@ -3,6 +3,7 @@ import { useWeb3Context } from "../context/useWeb3Context";
 import { useNavigate } from "react-router-dom";
 import Waiting from "../comp/Waiting";
 import axios from "axios";
+import AllCompanies from "../comp/AllCompanies";
 
 function Home() {
   const { updateWeb3State, Web3State } = useWeb3Context();
@@ -31,7 +32,7 @@ function Home() {
     }
   }, [selectedAccount, navigate]);
 
-  return <div>{!status ? <Waiting /> : <></>}</div>;
+  return <div>{!status ? <Waiting /> : <AllCompanies />}</div>;
 }
 
 export default Home;

@@ -6,6 +6,7 @@ import Admin from "../pages/Admin";
 import Home from "../pages/Home";
 import { Layout } from "../layout/layout";
 import PostCompany from "../pages/PostCompany";
+import CompanyPage from "../pages/CompanyPage";
 
 export const BrowserRouter = createBrowserRouter([
   {
@@ -16,6 +17,7 @@ export const BrowserRouter = createBrowserRouter([
       { path: "/admin", element: <Admin /> },
       { path: "/home", element: <Home /> },
       { path: "/post-company", element: <PostCompany /> },
+      { path: "/company/:id", element: <CompanyPage /> },
     ],
   },
 ]);
