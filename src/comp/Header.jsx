@@ -10,6 +10,8 @@ function Header() {
       selectedAccount: null,
       signature: null,
     });
+    localStorage.removeItem("token");
+
     // navigate("/connect-wallet");
   };
   return (
@@ -23,32 +25,38 @@ function Header() {
             - Admin Platform
           </span>
         </h1>
-        {/* <nav className="hidden md:flex space-x-6">
-          <a
-            href="#dashboard"
-            className="hover:text-blue-400 transition duration-300"
-          >
-            Dashboard
-          </a>
-          <a
-            href="#companies"
-            className="hover:text-green-400 transition duration-300"
-          >
-            Companies
-          </a>
-          <a
-            href="#settings"
-            className="hover:text-blue-400 transition duration-300"
-          >
-            Settings
-          </a>
-          <button className="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold transition duration-300">
-            Logout
-          </button>
-        </nav> */}
-        <div>
-          {selectedAccount && <button onClick={handlelogout}>logout</button>}
-        </div>
+        {selectedAccount && ( // Render only if selectedAccount exists
+          <nav className="hidden md:flex items-center space-x-6 p-4 bg-gray-800 shadow-lg rounded-md">
+            <a
+              href="#dashboard"
+              className="text-white hover:text-blue-400 transition duration-300 font-medium"
+            >
+              Profile
+            </a>
+            {import.meta.env.VITE_ADMIN_WALLET_ADDRESS.toLowerCase() ===
+              selectedAccount.toLowerCase() && (
+              <a
+                href="#companies"
+                className="text-white hover:text-green-400 transition duration-300 font-medium"
+              >
+                Approve Status
+              </a>
+            )}
+
+            <a
+              href="#settings"
+              className="text-white hover:text-blue-400 transition duration-300 font-medium"
+            >
+              Post Company
+            </a>
+            <button
+              className="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold transition duration-300"
+              onClick={handlelogout}
+            >
+              Logout
+            </button>
+          </nav>
+        )}
       </div>
     </header>
   );

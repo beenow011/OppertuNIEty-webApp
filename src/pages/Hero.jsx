@@ -1,8 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useWeb3Context } from "../context/useWeb3Context";
 
 function Hero() {
   const navigate = useNavigate();
+  const { updateWeb3State, Web3State } = useWeb3Context();
+  const { selectedAccount } = Web3State;
+  useEffect(() => {
+    if (selectedAccount) {
+      navigate("/home");
+    }
+  }, [selectedAccount]);
+
   return (
     <section className="bg-gray-900 text-white py-20">
       <div className="container mx-auto px-6 text-center">

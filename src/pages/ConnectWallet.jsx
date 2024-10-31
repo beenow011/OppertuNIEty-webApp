@@ -4,14 +4,21 @@ import { useNavigate } from "react-router-dom";
 import { connectWallet } from "../utils/connectWallet";
 import { Loader2 } from "lucide-react";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 function ConnectWallet() {
   const { updateWeb3State, Web3State } = useWeb3Context();
-  const [walletAddressLoading, setWalletAddressLoading] = useState(false);
-  const [createAccountLoading, setCreateAccountLoading] = useState(false);
-  const { selectedAccount, signature } = Web3State;
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState({
+    wallet: false,
+    createAccount: false,
+  });
   const [showCreateAccountForm, setShowCreateAccountForm] = useState(false);
+  const [selectedWallet, setSelectedWallet] = useState(null);
+  const [selectedSignature, setSelectedSignature] = useState(null);
+  const navigate = useNavigate();
+  const [showInstructions, setShowInstructions] = useState(false);
+  const { selectedAccount, signature } = Web3State;
+
   const [formData, setFormData] = useState({
     name: "",
     userAddress: "",
@@ -19,121 +26,128 @@ function ConnectWallet() {
     branch: "",
     graduationYear: "",
   });
+
   useEffect(() => {
-    if (selectedAccount) {
-      setFormData({ ...formData, userAddress: selectedAccount });
-    }
-  }, [selectedAccount]);
+    if (selectedAccount) navigate("/home");
+  }, [selectedAccount, navigate]);
+
+  useEffect(() => {
+    setFormData((prev) => ({ ...prev, userAddress: selectedWallet || "" }));
+  }, [selectedWallet]);
 
   const handleConnectWallet = async () => {
     try {
       const { selectedAccount, signature } = await connectWallet();
-      updateWeb3State({ selectedAccount, signature });
-      if (selectedAccount) {
-        const url =
-          "http://localhost:3000/api/coordinator-auth/login-user?address=" +
-          selectedAccount;
-        const dataSignature = {
-          signature,
-        };
-        const res = await axios.post(url, dataSignature);
-        if (res.status === 200) {
-          localStorage.setItem("token", res.data.token);
-          if (
-            import.meta.env.VITE_ADMIN_WALLET_ADDRESS.toLowerCase() ===
-            selectedAccount.toLowerCase()
-          ) {
-            navigate("/admin");
-          } else {
-            navigate("/home");
-          }
-        }
+      if (!selectedAccount) return;
+
+      const url = `http://localhost:3000/api/coordinator-auth/login-user?address=${selectedAccount}`;
+      const res = await axios.post(url, { signature });
+
+      if (res.status === 200) {
+        localStorage.setItem("token", res.data.token);
+        updateWeb3State({ selectedAccount, signature });
+        const redirectPath =
+          selectedAccount.toLowerCase() ===
+          import.meta.env.VITE_ADMIN_WALLET_ADDRESS.toLowerCase()
+            ? "/admin"
+            : "/home";
+        navigate(redirectPath);
       }
     } catch (error) {
-      console.error(error);
+      toast.error(error.response?.data?.error || "Failed to connect wallet");
     }
   };
 
   const connectWalletToCreateAcc = async () => {
+    setLoading((prev) => ({ ...prev, wallet: true }));
     try {
-      setWalletAddressLoading(true);
       const { selectedAccount, signature } = await connectWallet();
-
-      updateWeb3State({ selectedAccount, signature });
-      setFormData({ ...formData, userAddress: selectedAccount });
+      setSelectedWallet(selectedAccount);
+      setSelectedSignature(signature);
     } catch (error) {
       console.error(error);
     } finally {
-      setWalletAddressLoading(false);
+      setLoading((prev) => ({ ...prev, wallet: false }));
     }
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
   const handleCreateAccount = async (e) => {
+    e.preventDefault();
+    setLoading((prev) => ({ ...prev, createAccount: true }));
     try {
-      setCreateAccountLoading(true);
-      e.preventDefault();
-      console.log("Creating account with data:", formData);
-      const url =
-        "http://localhost:3000/api/coordinator-auth/create-account?address=" +
-        selectedAccount;
-      const dataSignature = {
-        signature,
+      const url = `http://localhost:3000/api/coordinator-auth/create-account?address=${selectedWallet}`;
+      const data = {
+        signature: selectedSignature,
         usn: formData.usn.toLowerCase(),
         branch: formData.branch,
         graduationYear: formData.graduationYear,
         name: formData.name,
       };
-      const res = await axios.post(url, dataSignature);
+      const res = await axios.post(url, data);
       if (res.status === 200) {
         localStorage.setItem("token", res.data.token);
-        navigate("/home");
+        updateWeb3State({ selectedAccount, signature });
       }
-      console.log("res", res.data);
     } catch (error) {
-      console.error(error);
+      toast.error("Account creation failed");
     } finally {
-      setCreateAccountLoading(false);
+      setLoading((prev) => ({ ...prev, createAccount: false }));
     }
-    // Implement API call or backend logic here to create the account
   };
-  console.log("selectedAccount", formData);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const renderInput = (name, placeholder, type = "text") => (
+    <input
+      type={type}
+      name={name}
+      placeholder={placeholder}
+      value={formData[name]}
+      onChange={handleInputChange}
+      className="w-full px-4 py-2 border rounded-md bg-gray-800 text-white"
+      required
+    />
+  );
 
   return (
-    <section className="bg-gray-800 text-white py-16 px-8">
+    <section className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 text-white py-16 px-8">
       <div className="container mx-auto text-center">
-        <h2 className="text-3xl font-bold text-blue-400 mb-6">
+        <h2 className="text-4xl font-extrabold text-blue-400 mb-6">
           Connect Your Wallet
         </h2>
-        <p className="text-lg mb-8 max-w-2xl mx-auto text-gray-300">
-          To access the full features of{" "}
-          <span className="text-green-400">OpportuNIEty</span>, connect your
-          MetaMask wallet to our platform. This will allow secure access to
-          blockchain-powered features and ensure your data is safely stored on
-          the decentralized network.
+        <p className="text-lg mb-6 max-w-2xl mx-auto text-gray-300 leading-relaxed">
+          Access the exclusive features of{" "}
+          <span className="text-green-400">OpportuNIEty</span> by connecting
+          your MetaMask wallet.
         </p>
-        <ol className="text-left list-decimal list-inside mb-10 max-w-3xl mx-auto text-gray-300 space-y-4">
-          <li>
-            Install the MetaMask extension in your browser or the MetaMask app
-            on your mobile device.
-          </li>
-          <li>
-            Open MetaMask and set up or import an existing wallet if you haven’t
-            done so already.
-          </li>
-          <li>
-            Click the "Connect Wallet" button below to initiate the connection
-            process.
-          </li>
-          <li>
-            MetaMask will prompt you to authorize the connection; click
-            "Approve" to connect.
-          </li>
-        </ol>
+
+        <div className="flex justify-center mb-6">
+          <button
+            onClick={() => setShowInstructions(!showInstructions)}
+            className="text-blue-500 hover:text-blue-600 font-semibold underline transition duration-300"
+          >
+            {showInstructions ? "Hide" : "Show"} Connection Instructions
+          </button>
+        </div>
+
+        {/* Instructions List */}
+        {showInstructions && (
+          <ol className="text-left list-decimal list-inside mb-8 max-w-3xl mx-auto text-gray-300 space-y-4">
+            <li>Ensure you have MetaMask installed in your browser.</li>
+            <li>
+              Click "Connect Wallet" below to link your wallet to OpportuNIEty.
+            </li>
+            <li>Approve the connection request in MetaMask.</li>
+            <li>
+              Once connected, proceed to fill out the account details form.
+            </li>
+          </ol>
+        )}
+
+        {/* Wallet Connect Buttons */}
         <div className="flex justify-center space-x-4 py-6">
           <button
             className="bg-blue-500 hover:bg-blue-600 text-white px-10 py-3 rounded-md font-semibold transition duration-300 shadow-lg"
@@ -151,45 +165,33 @@ function ConnectWallet() {
 
         {/* Account Creation Form */}
         {showCreateAccountForm && (
-          <div className="mt-10 max-w-lg mx-auto bg-gray-700 p-6 rounded-lg shadow-lg">
-            <h3 className="text-xl font-semibold mb-4 text-blue-400">
+          <div className="mt-10 max-w-lg mx-auto bg-gray-800 p-8 rounded-lg shadow-xl">
+            <h3 className="text-2xl font-semibold mb-4 text-blue-400 text-center">
               Account Creation Form
             </h3>
             <form onSubmit={handleCreateAccount} className="space-y-4">
-              <div className="w-full px-4 py-2 border rounded-md bg-gray-800 text-white">
-                {selectedAccount ? (
+              <div className="w-full px-4 py-2 border rounded-md bg-gray-800 text-white flex items-center justify-center">
+                {selectedWallet ? (
                   <p className="text-sm text-gray-400">
-                    Connected Wallet Address: {selectedAccount}
+                    Connected Wallet Address: {selectedWallet}
                   </p>
-                ) : walletAddressLoading ? (
-                  <div className="flex gap-2 justify-center items-center">
-                    <Loader2 className="h-4 w-4 animate-spin text-blue-600" />{" "}
+                ) : loading.wallet ? (
+                  <div className="flex gap-2 items-center justify-center">
+                    <Loader2 className="h-4 w-4 animate-spin text-blue-600" />
                     Connecting wallet...
                   </div>
                 ) : (
-                  <button onClick={connectWalletToCreateAcc}>
+                  <button
+                    onClick={connectWalletToCreateAcc}
+                    className="text-blue-400 underline hover:text-blue-500"
+                  >
                     Connect Wallet
                   </button>
                 )}
               </div>
-              <input
-                type="text"
-                name="name"
-                placeholder="Name"
-                value={formData.name}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2 border rounded-md bg-gray-800 text-white"
-                required
-              />
-              <input
-                type="text"
-                name="usn"
-                placeholder="USN"
-                value={formData.usn}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2 border rounded-md bg-gray-800 text-white"
-                required
-              />
+
+              {renderInput("name", "Name")}
+              {renderInput("usn", "USN")}
               <select
                 name="branch"
                 value={formData.branch}
@@ -217,25 +219,23 @@ function ConnectWallet() {
                 <option value="" disabled>
                   Select Graduation Year
                 </option>
-                <option value="2024">2024</option>
-                <option value="2025">2025</option>
-                <option value="2026">2026</option>
-                <option value="2027">2027</option>
-                <option value="2028">2028</option>
-                <option value="2029">2029</option>
-                <option value="2030">2030</option>
+                {[2024, 2025, 2026, 2027, 2028, 2029, 2030].map((year) => (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
+                ))}
               </select>
-              {createAccountLoading ? (
-                <div>
-                  <Loader2 className="h-4 w-4 animate-spin text-blue-600" />{" "}
+
+              {loading.createAccount ? (
+                <div className="flex gap-4 items-center justify-center">
+                  <Loader2 className="h-4 w-4 animate-spin text-blue-600" />
                   Creating account...
                 </div>
               ) : (
                 <button
                   type="submit"
                   className="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md font-semibold transition duration-300 shadow-lg"
-                  disabled={selectedAccount ? false : true}
-                  onClick={handleCreateAccount}
+                  disabled={!selectedWallet}
                 >
                   Submit
                 </button>

@@ -11,6 +11,7 @@ function Admin() {
   const { selectedAccount } = Web3State;
   const navigate = useNavigate();
   const [unapprovedUsers, setUnapprovedUsers] = useState([]);
+  console.log(selectedAccount);
   useEffect(() => {
     if (!selectedAccount) {
       navigate("/connect-wallet");
