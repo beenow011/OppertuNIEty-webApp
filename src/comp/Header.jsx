@@ -44,7 +44,7 @@ function Header() {
             )}
 
             <a
-              href="#settings"
+              href="/post-company"
               className="text-white hover:text-blue-400 transition duration-300 font-medium"
             >
               Post Company

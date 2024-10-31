@@ -5,6 +5,7 @@ import ConnectWallet from "../pages/ConnectWallet";
 import Admin from "../pages/Admin";
 import Home from "../pages/Home";
 import { Layout } from "../layout/layout";
+import PostCompany from "../pages/PostCompany";
 
 export const BrowserRouter = createBrowserRouter([
   {
@@ -14,6 +15,7 @@ export const BrowserRouter = createBrowserRouter([
       { path: "/connect-wallet", element: <ConnectWallet /> },
       { path: "/admin", element: <Admin /> },
       { path: "/home", element: <Home /> },
+      { path: "/post-company", element: <PostCompany /> },
     ],
   },
 ]);
