@@ -208,6 +208,7 @@ function ConnectWallet() {
                 <option value="CIVIL">CIVIL</option>
                 <option value="IP">IP</option>
                 <option value="AIML">AIML</option>
+                <option value="ECE">ECE</option>
               </select>
               <select
                 name="graduationYear"
