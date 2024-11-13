@@ -87,6 +87,7 @@ function ConnectWallet() {
       if (res.status === 200) {
         localStorage.setItem("token", res.data.token);
         updateWeb3State({ selectedAccount, signature });
+        navigate("/home");
       }
     } catch (error) {
       toast.error("Account creation failed");

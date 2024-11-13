@@ -7,6 +7,7 @@ function CompanyPage() {
   const { Web3State } = useWeb3Context();
   const { selectedAccount } = Web3State;
   const [company, setCompany] = useState();
+  const [count, setCount] = useState(0);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
 
@@ -20,6 +21,7 @@ function CompanyPage() {
       );
       console.log(res.data);
       setCompany(res.data.company);
+      setCount(res.data.count);
     } catch (e) {
       console.log(e);
     }
@@ -74,14 +76,12 @@ function CompanyPage() {
             </li>
           </ul>
         </div>
-
         <div className="border-t border-gray-600 pt-6 mt-4">
           <h3 className="text-lg font-semibold mb-4 text-[#E94560]">
             Job Description
           </h3>
           <p className="text-gray-300 text-justify">{company.jobDescription}</p>
         </div>
-
         <div className="border-t border-gray-600 pt-6 mt-4">
           <h3 className="text-lg font-semibold mb-4 text-[#E94560]">
             Eligibility Criteria
@@ -105,7 +105,6 @@ function CompanyPage() {
             </li>
           </ul>
         </div>
-
         <div className="border-t border-gray-600 pt-6 mt-4">
           <h3 className="text-lg font-semibold mb-4 text-[#E94560]">
             Application Process
@@ -115,13 +114,16 @@ function CompanyPage() {
             <span className="text-gray-300">Schedule:</span> {company.schedule}
           </p>
         </div>
-
         <div className="mt-8">
-          <button className="bg-[#E94560] text-white font-bold py-3 px-6 rounded-full shadow-md hover:bg-[#0F3460] transition duration-300">
-            Download Excel Sheet
+          <button
+            className="bg-[#E94560] text-white font-bold py-3 px-6 rounded-full shadow-md hover:bg-[#0F3460] transition duration-300"
+            onClick={() => navigate(`/company/applied-students/${id}`)}
+          >
+            Applied students
           </button>
         </div>
         <div>Stats</div>
+        {count} students have applied to this company
       </div>
     </section>
   );

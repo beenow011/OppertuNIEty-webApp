@@ -1,10 +1,11 @@
 import React from "react";
 import { useWeb3Context } from "../context/useWeb3Context";
+import { useNavigate } from "react-router-dom";
 
 function Header() {
   const { updateWeb3State, Web3State } = useWeb3Context();
   const { selectedAccount } = Web3State;
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const handlelogout = () => {
     updateWeb3State({
       selectedAccount: null,
@@ -12,7 +13,7 @@ function Header() {
     });
     localStorage.removeItem("token");
 
-    // navigate("/connect-wallet");
+    navigate("/connect-wallet");
   };
   return (
     <header className="bg-gray-900 text-white shadow-lg py-5">
@@ -36,7 +37,7 @@ function Header() {
             {import.meta.env.VITE_ADMIN_WALLET_ADDRESS.toLowerCase() ===
               selectedAccount.toLowerCase() && (
               <a
-                href="#companies"
+                href="/admin"
                 className="text-white hover:text-green-400 transition duration-300 font-medium"
               >
                 Approve Status
@@ -48,6 +49,12 @@ function Header() {
               className="text-white hover:text-blue-400 transition duration-300 font-medium"
             >
               Post Company
+            </a>
+            <a
+              href="/home"
+              className="text-white hover:text-blue-400 transition duration-300 font-medium"
+            >
+              Home
             </a>
             <button
               className="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold transition duration-300"

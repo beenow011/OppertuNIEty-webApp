@@ -7,6 +7,7 @@ import Home from "../pages/Home";
 import { Layout } from "../layout/layout";
 import PostCompany from "../pages/PostCompany";
 import CompanyPage from "../pages/CompanyPage";
+import AppliedStudents from "../pages/AppliedStudents";
 
 export const BrowserRouter = createBrowserRouter([
   {
@@ -18,6 +19,7 @@ export const BrowserRouter = createBrowserRouter([
       { path: "/home", element: <Home /> },
       { path: "/post-company", element: <PostCompany /> },
       { path: "/company/:id", element: <CompanyPage /> },
+      { path: "/company/applied-students/:id", element: <AppliedStudents /> },
     ],
   },
 ]);

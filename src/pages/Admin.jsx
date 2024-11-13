@@ -7,36 +7,39 @@ import toast from "react-hot-toast";
 import NoUnapproved from "../comp/NoUnapproved";
 
 function Admin() {
-  const { updateWeb3State, Web3State } = useWeb3Context();
+  const { Web3State } = useWeb3Context();
   const { selectedAccount } = Web3State;
   const navigate = useNavigate();
   const [unapprovedUsers, setUnapprovedUsers] = useState([]);
-  console.log(selectedAccount);
+  const adminWalletAddress = import.meta.env.VITE_ADMIN_WALLET_ADDRESS;
+
   useEffect(() => {
-    if (!selectedAccount) {
-      navigate("/connect-wallet");
-    }
     if (
-      import.meta.env.VITE_ADMIN_WALLET_ADDRESS.toString().toLowerCase() !==
-      selectedAccount.toLowerCase()
+      adminWalletAddress &&
+      selectedAccount &&
+      adminWalletAddress.toLowerCase() !== selectedAccount.toLowerCase()
     ) {
       navigate("/home");
     }
-  }, [selectedAccount, navigate]);
+  }, [selectedAccount, navigate, adminWalletAddress]);
+
+  console.log(selectedAccount);
 
   useEffect(() => {
-    axios
-      .get(
-        "http://localhost:3000/api/coordinator-auth/unapproved?address=" +
-          selectedAccount
-      )
-      .then((res) => {
-        console.log("res", res.data);
-        setUnapprovedUsers(res.data.unapprovedCoordinators);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    if (selectedAccount) {
+      axios
+        .get(
+          "http://localhost:3000/api/coordinator-auth/unapproved?address=" +
+            selectedAccount
+        )
+        .then((res) => {
+          console.log("res", res.data);
+          setUnapprovedUsers(res.data.unapprovedCoordinators);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
   }, [selectedAccount]);
   console.log(unapprovedUsers);
 
