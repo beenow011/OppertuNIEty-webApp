@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
-import "./App.css";
+// import "./App.css";
 import Web3Provider from "./context/Web3Provider";
 import { RouterProvider, useNavigate } from "react-router-dom";
 import { BrowserRouter } from "./routes/route";

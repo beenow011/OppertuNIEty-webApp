@@ -1,6 +1,7 @@
 import React from "react";
 import { useWeb3Context } from "../context/useWeb3Context";
 import { useNavigate } from "react-router-dom";
+import { User, Home, Briefcase, LogOut, CheckSquare } from "lucide-react";
 
 function Header() {
   const { updateWeb3State, Web3State } = useWeb3Context();
@@ -18,7 +19,8 @@ function Header() {
   return (
     <header className="bg-gray-900 text-white shadow-lg py-5">
       <div className="container mx-auto flex justify-between items-center px-8">
-        <h1 className="text-3xl font-extrabold">
+        {/* Logo and Title */}
+        <h1 className="text-3xl font-extrabold flex items-center">
           <span className="text-slate-400">Opportu</span>
           <span className="text-blue-500">NIE</span>
           <span className="text-slate-400">ty</span>
@@ -26,42 +28,64 @@ function Header() {
             - Admin Platform
           </span>
         </h1>
-        {selectedAccount && ( // Render only if selectedAccount exists
+
+        {/* Navigation */}
+        {selectedAccount && (
           <nav className="hidden md:flex items-center space-x-6 p-4 bg-gray-800 shadow-lg rounded-md">
-            <a
-              href="#dashboard"
-              className="text-white hover:text-blue-400 transition duration-300 font-medium"
+            {/* Profile */}
+            <div
+              className="group relative"
+              onClick={() => navigate("/profile")}
             >
-              Profile
-            </a>
+              <User className="text-white hover:text-blue-400 transition duration-300 cursor-pointer" />
+              <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-sm bg-gray-700 text-white py-1 px-2 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                Profile
+              </span>
+            </div>
+
+            {/* Approve Status (visible only to admin) */}
             {import.meta.env.VITE_ADMIN_WALLET_ADDRESS.toLowerCase() ===
               selectedAccount.toLowerCase() && (
-              <a
-                href="/admin"
-                className="text-white hover:text-green-400 transition duration-300 font-medium"
+              <div
+                className="group relative"
+                onClick={() => navigate("/approve-status")}
               >
-                Approve Status
-              </a>
+                <CheckSquare className="text-white hover:text-green-400 transition duration-300 cursor-pointer" />
+                <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-sm bg-gray-700 text-white py-1 px-2 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  Approve Status
+                </span>
+              </div>
             )}
 
-            <a
-              href="/post-company"
-              className="text-white hover:text-blue-400 transition duration-300 font-medium"
+            {/* Post Company */}
+            <div
+              className="group relative"
+              onClick={() => navigate("/post-company")}
             >
-              Post Company
-            </a>
-            <a
-              href="/home"
-              className="text-white hover:text-blue-400 transition duration-300 font-medium"
-            >
-              Home
-            </a>
-            <button
-              className="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold transition duration-300"
-              onClick={handlelogout}
-            >
-              Logout
-            </button>
+              <Briefcase className="text-white hover:text-blue-400 transition duration-300 cursor-pointer" />
+              <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-sm bg-gray-700 text-white py-1 px-2 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                Post Company
+              </span>
+            </div>
+
+            {/* Home */}
+            <div className="group relative" onClick={() => navigate("/home")}>
+              <Home className="text-white hover:text-blue-400 transition duration-300 cursor-pointer" />
+              <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-sm bg-gray-700 text-white py-1 px-2 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                Home
+              </span>
+            </div>
+
+            {/* Logout */}
+            <div className="group relative">
+              <LogOut
+                className="text-white hover:text-red-400 transition duration-300 cursor-pointer"
+                onClick={handlelogout}
+              />
+              <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-sm bg-gray-700 text-white py-1 px-2 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                Logout
+              </span>
+            </div>
           </nav>
         )}
       </div>

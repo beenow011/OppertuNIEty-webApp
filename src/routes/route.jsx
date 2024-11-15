@@ -8,6 +8,7 @@ import { Layout } from "../layout/layout";
 import PostCompany from "../pages/PostCompany";
 import CompanyPage from "../pages/CompanyPage";
 import AppliedStudents from "../pages/AppliedStudents";
+import UploadResourse from "../pages/UploadResourse";
 
 export const BrowserRouter = createBrowserRouter([
   {
@@ -20,6 +21,7 @@ export const BrowserRouter = createBrowserRouter([
       { path: "/post-company", element: <PostCompany /> },
       { path: "/company/:id", element: <CompanyPage /> },
       { path: "/company/applied-students/:id", element: <AppliedStudents /> },
+      { path: "/company/upload-resourse/:id", element: <UploadResourse /> },
     ],
   },
 ]);

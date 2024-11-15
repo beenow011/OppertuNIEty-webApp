@@ -53,6 +53,39 @@ function CompanyPage() {
             </p>
           </div>
         </div>
+
+        <div className="mt-8 bg-gray-800 p-6 rounded-lg shadow-lg">
+          {/* Button */}
+          <div className="flex gap-3 justify-center mb-6">
+            <button
+              className="bg-[#E94560] text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-[#0F3460] hover:scale-105 transition duration-300 ease-in-out"
+              onClick={() => navigate(`/company/applied-students/${id}`)}
+            >
+              View Applied Students
+            </button>
+
+            <button
+              className="bg-[#459fe9] text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-[#0F3460] hover:scale-105 transition duration-300 ease-in-out"
+              onClick={() => navigate(`/company/upload-resourse/${id}`)}
+            >
+              Upload Resourse
+            </button>
+          </div>
+
+          {/* Stats Section */}
+          <div className="text-center bg-gray-900 py-4 px-6 rounded-lg shadow-inner">
+            <h2 className="text-2xl font-bold text-blue-400 mb-2">
+              Statistics
+            </h2>
+            <p className="text-lg text-gray-300">
+              <span className="text-4xl font-extrabold text-green-400">
+                {count}
+              </span>{" "}
+              students have applied to this company.
+            </p>
+          </div>
+        </div>
+
         <div className="border-t border-gray-600 pt-6 mt-4">
           <h3 className="text-lg font-semibold mb-4 text-[#E94560]">
             Job Details
@@ -114,16 +147,6 @@ function CompanyPage() {
             <span className="text-gray-300">Schedule:</span> {company.schedule}
           </p>
         </div>
-        <div className="mt-8">
-          <button
-            className="bg-[#E94560] text-white font-bold py-3 px-6 rounded-full shadow-md hover:bg-[#0F3460] transition duration-300"
-            onClick={() => navigate(`/company/applied-students/${id}`)}
-          >
-            Applied students
-          </button>
-        </div>
-        <div>Stats</div>
-        {count} students have applied to this company
       </div>
     </section>
   );
