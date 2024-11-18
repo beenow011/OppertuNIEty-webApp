@@ -48,7 +48,7 @@ function Header() {
               selectedAccount.toLowerCase() && (
               <div
                 className="group relative"
-                onClick={() => navigate("/approve-status")}
+                onClick={() => navigate("/admin")}
               >
                 <CheckSquare className="text-white hover:text-green-400 transition duration-300 cursor-pointer" />
                 <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-sm bg-gray-700 text-white py-1 px-2 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
