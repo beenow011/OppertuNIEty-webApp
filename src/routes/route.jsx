@@ -9,6 +9,7 @@ import PostCompany from "../pages/PostCompany";
 import CompanyPage from "../pages/CompanyPage";
 import AppliedStudents from "../pages/AppliedStudents";
 import UploadResourse from "../pages/UploadResourse";
+import UploadFaq from "../pages/UploadFaq";
 
 export const BrowserRouter = createBrowserRouter([
   {
@@ -22,6 +23,7 @@ export const BrowserRouter = createBrowserRouter([
       { path: "/company/:id", element: <CompanyPage /> },
       { path: "/company/applied-students/:id", element: <AppliedStudents /> },
       { path: "/company/upload-resourse/:id", element: <UploadResourse /> },
+      { path: "/company/upload-faq/:id", element: <UploadFaq /> },
     ],
   },
 ]);

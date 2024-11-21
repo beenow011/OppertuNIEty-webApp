@@ -70,6 +70,12 @@ function CompanyPage() {
             >
               Upload Resourse
             </button>
+            <button
+              className="bg-[#459fe9] text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-[#0F3460] hover:scale-105 transition duration-300 ease-in-out"
+              onClick={() => navigate(`/company/upload-faq/${id}`)}
+            >
+              Interview Questions
+            </button>
           </div>
 
           {/* Stats Section */}
